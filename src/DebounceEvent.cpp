@@ -125,3 +125,42 @@ unsigned char DebounceEvent::loop() {
     return event;
 
 }
+
+
+//***********************************************************************************************************************************************************
+
+void LongPressBtn::setLongpressDelay(unsigned int delay)
+{
+	wait_delay = delay;
+	wait_longpress = false;
+}
+
+unsigned char LongPressBtn::loop()
+{
+	unsigned char event = DebounceEvent::loop();
+	
+	if (wait_delay) 
+		{
+		if (event == EVENT_PRESSED) 
+		{
+			// Log.trace( FF("LongPressBtn.loop() == EVENT_PRESSED" CR) );
+			wait_longpress = true;
+		}
+		else if (pressed() && getPressLength() > wait_delay )
+		{
+			if (wait_longpress)
+			{
+				wait_longpress = false;
+				// Log.trace( FF("LongPressBtn.loop() longpress" CR));
+				event = EVENT_LONGPRESS;
+				if (this->callback) this->callback(_pin, event, _event_count, _event_length);
+			}
+		}
+	}
+	
+	return event;
+}
+
+//***********************************************************************************************************************************************************
+
+

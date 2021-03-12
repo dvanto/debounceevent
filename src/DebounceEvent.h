@@ -41,6 +41,8 @@
 #define EVENT_CHANGED           1
 #define EVENT_PRESSED           2
 #define EVENT_RELEASED          3
+// только для LongPressBtn
+#define EVENT_LONGPRESS			4
 
 class DebounceEvent {
 
@@ -54,7 +56,7 @@ class DebounceEvent {
         unsigned long getPressLength() { return pressed()?millis()-_event_start:_event_length; }
         unsigned long getEventCount() { return _event_count; }
 
-    private:
+    protected:
 
         uint8_t _pin;
         uint8_t _mode;
@@ -72,5 +74,26 @@ class DebounceEvent {
         void _init(uint8_t pin, uint8_t mode, unsigned long delay, unsigned long repeat);
 
 };
+
+
+class LongPressBtn: public DebounceEvent
+{
+public:
+	LongPressBtn(uint8_t pin, DEBOUNCE_EVENT_CALLBACK_SIGNATURE, uint8_t mode = BUTTON_PUSHBUTTON | BUTTON_DEFAULT_HIGH, unsigned long delay = DEBOUNCE_DELAY, unsigned long repeat = REPEAT_DELAY)
+		: DebounceEvent(pin, callback, mode, delay, repeat)
+		{}
+		
+	LongPressBtn(uint8_t pin, uint8_t mode = BUTTON_PUSHBUTTON | BUTTON_DEFAULT_HIGH, unsigned long delay = DEBOUNCE_DELAY, unsigned long repeat = REPEAT_DELAY)	
+		: DebounceEvent(pin, mode, delay, repeat)
+		{}
+ 
+	void setLongpressDelay(unsigned int delay);
+	unsigned char loop();
+	
+private:
+	bool			wait_longpress	= false;
+	unsigned int	wait_delay		= 0;
+};
+
 
 #endif
