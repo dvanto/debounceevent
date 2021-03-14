@@ -43,6 +43,7 @@
 #define EVENT_RELEASED          3
 // только для LongPressBtn
 #define EVENT_LONGPRESS			4
+#define	EVENT_YETPRESSED		8
 
 class DebounceEvent {
 
